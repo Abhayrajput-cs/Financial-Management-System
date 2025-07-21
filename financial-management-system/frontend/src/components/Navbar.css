@@ -1,0 +1,183 @@
+.navbar {
+  background-color: #2c3e50;
+  color: white;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  margin: 0;
+}
+
+.navbar-container {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  padding: 1rem 0;
+}
+
+.navbar-brand:hover {
+  color: #3498db;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.navbar-currency {
+  margin: 0 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-currency .currency-selector.compact {
+  position: relative;
+}
+
+.navbar-currency .currency-button.compact {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.navbar-currency .currency-button.compact:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-currency .currency-dropdown {
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-item {
+  color: white;
+  text-decoration: none;
+  padding: 1rem 1.5rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 1rem;
+}
+
+.navbar-item:hover {
+  background-color: #34495e;
+  color: white;
+}
+
+.navbar-item.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.navbar-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  top: 100%;
+  right: 0;
+}
+
+.navbar-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-item {
+  color: #2c3e50;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+.logout-btn {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background-color: #fee;
+}
+
+/* Loading styles */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.loading-spinner {
+  font-size: 1.2rem;
+  color: #3498db;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .navbar-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+  
+  .navbar-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .dropdown-content {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+  }
+}

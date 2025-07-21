@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .success { background: #d4edda; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { background: #f8d7da; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .expense { background: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #dee2e6; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Direct API Test</h1>
+    
+    <div>
+        <button class="button" onclick="doLogin()">🔐 Login</button>
+        <button class="button" onclick="getExpenses()">📊 Get Expenses</button>
+        <button class="button" onclick="clearData()">🗑️ Clear</button>
+    </div>
+    
+    <div id="status"></div>
+    <div id="results"></div>
+
+    <script>
+        let token = '';
+        
+        function log(message, type = 'info') {
+            const status = document.getElementById('status');
+            const color = type === 'error' ? '#721c24' : type === 'success' ? '#155724' : '#004085';
+            status.innerHTML += `<div style="color: ${color}; margin: 5px 0;">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+        
+        async function doLogin() {
+            log('🔐 Attempting login...');
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'abcd@gmail.com',
+                        password: 'password123'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Login response:', data);
+                
+                if (data.success) {
+                    token = data.token;
+                    localStorage.setItem('token', token);
+                    log('✅ Login successful!', 'success');
+                    log(`User: ${data.user.name} (${data.user.email})`);
+                } else {
+                    log('❌ Login failed: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('❌ Login error: ' + error.message, 'error');
+            }
+        }
+        
+        async function getExpenses() {
+            const currentToken = token || localStorage.getItem('token');
+            if (!currentToken) {
+                log('❌ No token found. Please login first.', 'error');
+                return;
+            }
+            
+            log('📡 Fetching expenses...');
+            try {
+                const response = await fetch('http://localhost:8080/api/expense', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Expenses response:', data);
+                
+                if (data.success) {
+                    log(`✅ Found ${data.count} expenses! Total: $${data.totalExpense}`, 'success');
+                    displayExpenses(data.expenses);
+                } else {
+                    log('❌ Failed to get expenses: ' + (data.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                log('❌ Expenses error: ' + error.message, 'error');
+            }
+        }
+        
+        function displayExpenses(expenses) {
+            const results = document.getElementById('results');
+            if (!expenses || expenses.length === 0) {
+                results.innerHTML = '<div class="error">No expenses found</div>';
+                return;
+            }
+            
+            let html = `<h2>📋 ${expenses.length} Expenses Found:</h2>`;
+            expenses.slice(0, 10).forEach(expense => {
+                html += `
+                    <div class="expense">
+                        <strong>$${expense.amount}</strong> - ${expense.category}<br>
+                        <small>${expense.description || 'No description'} (${expense.date})</small>
+                    </div>
+                `;
+            });
+            
+            if (expenses.length > 10) {
+                html += `<div style="text-align: center; margin: 10px; color: #6c757d;">... and ${expenses.length - 10} more expenses</div>`;
+            }
+            
+            results.innerHTML = html;
+        }
+        
+        function clearData() {
+            document.getElementById('status').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+            localStorage.clear();
+            token = '';
+            log('🗑️ Cleared all data');
+        }
+        
+        // Auto-load token on page load
+        window.onload = function() {
+            const savedToken = localStorage.getItem('token');
+            if (savedToken) {
+                token = savedToken;
+                log('🔑 Found saved token');
+            }
+            log('🚀 Page loaded. Backend: http://localhost:8080/api');
+        };
+    </script>
+</body>
+</html>
